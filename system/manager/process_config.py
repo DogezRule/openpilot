@@ -37,6 +37,9 @@ def joystick(started: bool, params: Params, CP: car.CarParams) -> bool:
 def not_joystick(started: bool, params: Params, CP: car.CarParams) -> bool:
   return started and not params.get_bool("JoystickDebugMode")
 
+def custom_sounds_server_enabled(started: bool, params: Params, CP: car.CarParams) -> bool:
+  return params.get_bool("RecordAudioFeedback")
+
 def long_maneuver(started: bool, params: Params, CP: car.CarParams) -> bool:
   return started and params.get_bool("LongitudinalManeuverMode")
 
@@ -82,6 +85,7 @@ procs = [
   PythonProcess("sensord", "system.sensord.sensord", only_onroad, enabled=not PC),
   PythonProcess("ui", "selfdrive.ui.ui", always_run, restart_if_crash=True),
   PythonProcess("soundd", "selfdrive.ui.soundd", only_onroad),
+  PythonProcess("custom_sounds_server", "selfdrive.ui.custom_sounds_server", custom_sounds_server_enabled),
   PythonProcess("locationd", "selfdrive.locationd.locationd", only_onroad),
   NativeProcess("_pandad", "selfdrive/pandad", ["./pandad"], always_run, enabled=False),
   PythonProcess("calibrationd", "selfdrive.locationd.calibrationd", only_onroad),
