@@ -243,11 +243,7 @@ class NAPLayout(Widget):
       "RecordAudioFeedback",
       "Custom Sounds Web Server",
       "Enable the custom sounds web portal on port 8082 to upload sound files over Wi-Fi.",
-      enabled=False,
     )
-    
-    
-
 
     # ── Section 6: Actions ──
     self._all_items.append(section_header_item("Actions"))
