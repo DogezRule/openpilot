@@ -45,6 +45,9 @@ HTML_PAGE = """
       <label for="file">Select audio file:</label>
       <input type="file" id="file" name="file" accept="audio/*" required>
       
+      <label for="volume">Volume Multiplier: <span id="volume_val">1.0</span>x</label>
+      <input type="range" id="volume" name="volume" min="0.1" max="3.0" step="0.1" value="1.0" style="margin-bottom: 20px;">
+      
       <button type="submit">Process & Upload</button>
     </form>
     <div id="status" class="status"></div>
@@ -86,14 +89,19 @@ HTML_PAGE = """
       return bufferArray;
     }
 
+    document.getElementById('volume').addEventListener('input', function() {
+      document.getElementById('volume_val').textContent = this.value;
+    });
+
     document.getElementById('uploadForm').addEventListener('submit', async (e) => {
       e.preventDefault();
       const statusDiv = document.getElementById('status');
       statusDiv.textContent = 'Processing audio in browser...';
       statusDiv.className = 'status';
 
-      const fileInput = document.getElementById('file');
+        const fileInput = document.getElementById('file');
       const soundType = document.getElementById('sound_type').value;
+      const volumeVal = parseFloat(document.getElementById('volume').value);
       const file = fileInput.files[0];
 
       try {
@@ -112,9 +120,9 @@ HTML_PAGE = """
         lowpass.type = 'lowpass';
         lowpass.frequency.value = 2500;
 
-        // Apply -5dB volume reduction (Gain = 10^(-5/20) = 0.562)
+        // Apply selected volume multiplier
         const gainNode = offlineCtx.createGain();
-        gainNode.gain.value = 0.562;
+        gainNode.gain.value = volumeVal;
 
         source.connect(lowpass);
         lowpass.connect(gainNode);
